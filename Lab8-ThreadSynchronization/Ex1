@@ -1,0 +1,40 @@
+import java.util.Random;
+
+public class lab8q1 {
+
+	public static void main(String[] args) {
+		//Two threads will be started by constructor of each
+		TeamHasBall teamArsenal = new TeamHasBall("Arsenal"); 
+		TeamHasBall teamBayern = new TeamHasBall("Bayern");
+	}
+
+}
+
+ class TeamHasBall implements Runnable{
+	Thread t;
+	String teamName;
+	Random r;
+	public TeamHasBall(String teamName) {
+		this.teamName = teamName;
+		r= new Random();
+		t = new Thread(this);
+		t.start();
+	}
+	
+	@SuppressWarnings("static-access")
+	public void run() {
+		for(int k=0;k<11;++k) { // simulate this 11 times - should be time based in real life
+			hasBall();
+			try {
+				t.sleep(r.nextInt(100)); //sleep for random time bw 0 -1 ms and then try to get the ball again
+			}catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	synchronized public void hasBall() { // Synchronize access to has ball function- only one at a time
+		int currentPlayer = r.nextInt(10) +1; // each team has 11 players - 1 to 11 
+		System.out.println("Player " + currentPlayer + " from team " + teamName +" has the ball");
+	}
+}
