@@ -1,0 +1,36 @@
+public class DeadLock extends Thread {
+	public static final String JAR1 = "coffee";
+	public static final String JAR2 = "sugar";
+
+	public static void main(String[] a) {
+		Thread mariam = new Mariam();
+		Thread alia = new Alia();
+
+		mariam.start();
+		alia.start();
+	}
+	private static class Mariam extends Thread {
+                @Override
+		public void run() {
+			synchronized (JAR1) { // both should try same order grabbing
+				System.out.println("Mariam grabs the " + JAR1);
+				System.out.println("Mariam  waiting for the " + JAR2);
+				synchronized (JAR2) {
+				System.out.println("Mariam grabs both "+JAR1+ "and "+ JAR2+ " and enjoys the coffee");
+				}
+			}
+		}
+	}
+	private static class Alia extends Thread {
+           @Override
+		public void run() {
+			synchronized (JAR1) {  // both should try same order of grabbing resources
+				System.out.println("Alia grabs the " + JAR1);
+				System.out.println("Alia waiting for the " + JAR2);
+				synchronized (JAR2) {
+				System.out.println("Alia grabs both "+JAR1+ "and "+ JAR2+  " and enjoys the coffee");
+				}
+			}
+		}
+	}
+}
